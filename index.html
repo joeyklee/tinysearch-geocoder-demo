@@ -2,6 +2,72 @@
 
 <head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      font-size: 16px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #map {
+      height: 480px;
+    }
+
+    #results{
+      overflow-y: scroll;
+      max-height: 300px;
+      height:300px;
+      border: 1px solid black;
+      box-shadow: 2px 2px 0px black;
+      margin: 1rem 0 0 0;
+      padding: 1rem;
+    }
+    #results > li {
+      list-style: none;
+    }
+    .search-section{
+      margin:1rem;
+    }
+    #demo {
+      padding: 0.5rem;
+      /* border: 1px solid black; */
+      /* box-shadow: 2px 2px 0px black; */
+      /* margin-top:0.5rem; */
+      /* width: auto; */
+      height: 100%;
+      border: none;
+      background: none;
+      font-size:1.2rem;
+    }
+    .search-bar{
+      display:grid;
+      grid-template-columns: auto 1fr;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      height: 3rem;
+      border:1px solid black;
+      padding: 0 0.5rem 0 0.5rem;
+      box-shadow: 2px 2px 0px black;
+      
+    }
+    .search-icon{
+      /* border:1px solid black; */
+      display: inline-block;
+      height: 100%;
+
+      padding:0.5rem 0 0.5rem 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -35,38 +101,63 @@
     run();
   </script>
 
-  <script>
-    // And afterwards we can use all the functionality defined in wasm.
-    function doSearch() {
-      let value = document.getElementById("demo").value;
-      console.log(`Search query: ${value}`);
 
-      const results = search(value, 20);
-
-      console.log(`Results: ${results}`);
-
-      let ul = document.getElementById("results");
-      ul.innerHTML = "";
-
-      for (i = 0; i < results.length; i++) {
-        var li = document.createElement("li");
-
-        let [title, url] = results[i];
-        let elemlink = document.createElement('a');
-        elemlink.innerHTML = title;
-        elemlink.setAttribute('href', `https://geojson.io/#map=11${url}`);
-        li.appendChild(elemlink);
-
-        ul.appendChild(li);
-      }
-    }
-  </script>
-
-  <h2>Search</h2>
-  <input type="text" id="demo" onkeyup="doSearch()">
-  <h2>Results</h2>
-  <ul id="results">
-  </ul>
+  
+  
+  <section class="search-section">
+    <!-- <h2>Search</h2> -->
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="demo" placeholder="Brooklyn New York" onkeyup="doSearch()">
+    </div>
+    <p style="font-size:0.9rem; font-color: #666; font-style: italic;margin-bottom:1rem;">Search for a city name - requires the full city name to be spelled out for best results</p>
+    <div id="map"></div>
+    <h2 style="margin-top:1rem;">Results</h2>
+    <ul id="results">
+    </ul>
+  </section>
 </body>
+<script>
+  const map = L.map('map').setView([16,0
+          ], 2);
+  const myPoints = L.layerGroup().addTo(map)
+  
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
 
+  // And afterwards we can use all the functionality defined in wasm.
+  function doSearch() {
+    myPoints.clearLayers();
+    let value = document.getElementById("demo").value;
+    console.log(`Search query: ${value}`);
+
+    const results = search(value, 100);
+
+    console.log(`Results: ${results}`);
+
+    let ul = document.getElementById("results");
+    ul.innerHTML = "";
+
+    for (i = 0; i < results.length; i++) {
+      var li = document.createElement("li");
+
+      let [title, url] = results[i];
+      const coords = url.split('/').filter(Boolean)
+      const mapUrl = `https://geojson.io/#map=11${url}`
+      const marker = L.marker([+coords[0], +coords[1]]).bindPopup(`<a href=${mapUrl}>${title}</a>`)
+      myPoints.addLayer(marker)
+      let elemlink = document.createElement('a');
+      elemlink.innerHTML = title;
+      elemlink.setAttribute('href', mapUrl);
+      li.appendChild(elemlink);
+
+      ul.appendChild(li);
+    }
+  }
+
+  
+
+</script>
 </html>
