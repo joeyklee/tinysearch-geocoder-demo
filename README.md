@@ -6,6 +6,8 @@ A tiny, quick and dirty demo using [tinysearch](https://github.com/tinysearch/ti
 
 We could optimize this to be smaller, but for now this loads ~5.5mb of data into the browser and takes about 12ms to load the wasm file and 80ms to load the page.
 
+Search results against 47K cities - ~30-50ms
+
 Demo adpated from the `wasm_output` of https://github.com/tinysearch/tinysearch?tab=readme-ov-file#usage
 
 ## Data

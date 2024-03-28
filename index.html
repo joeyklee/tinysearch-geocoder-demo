@@ -20,7 +20,7 @@
     }
 
     #map {
-      height: 480px;
+      height: 450px;
     }
 
     #results{
@@ -110,7 +110,8 @@
       <span class="search-icon">🔍</span>
       <input type="text" id="demo" placeholder="Brooklyn New York" onkeyup="doSearch()">
     </div>
-    <p style="font-size:0.9rem; font-color: #666; font-style: italic;margin-bottom:1rem;">Search for a city name - requires the full city name to be spelled out for best results</p>
+    <p style="font-size:0.9rem; font-color: #666; font-style: italic;margin-bottom:0.5rem;">Search for a city name - requires the full city name to be spelled out for best results</p>
+    <p  style="font-size:0.9rem; font-color: #666; font-style: italic;margin-bottom:1rem;" class="results-time"></p>
     <div id="map"></div>
     <h2 style="margin-top:1rem;">Results</h2>
     <ul id="results">
@@ -127,13 +128,19 @@
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
 
+  const $resultsTime = document.querySelector('.results-time')
+
   // And afterwards we can use all the functionality defined in wasm.
   function doSearch() {
     myPoints.clearLayers();
     let value = document.getElementById("demo").value;
     console.log(`Search query: ${value}`);
 
+    const t0 = performance.now();
     const results = search(value, 100);
+    const t1 = performance.now();
+    $resultsTime.textContent = `results in ${t1 - t0} milliseconds`
+
 
     console.log(`Results: ${results}`);
 
