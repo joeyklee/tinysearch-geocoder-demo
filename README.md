@@ -2,7 +2,7 @@
 
 ![demo showing brooklyn search results](./documentation/demo.png)
 
-A tiny, quick and dirty demo using [tinysearch](https://github.com/tinysearch/tinysearch/tree/master) to create a geocoder using wasm for city level search in the browser
+A tiny, quick and dirty demo using [tinysearch](https://github.com/tinysearch/tinysearch/tree/master) to create a <s>geocoder</s> a place name search tool using wasm for city level search in the browser
 
 We could optimize this to be smaller, but for now this loads ~5.5mb of data into the browser and takes about 12ms to load the wasm file and 80ms to load the page.
 
